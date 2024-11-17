@@ -5,60 +5,98 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private GameObject volna;
-    [SerializeField] private float speedRight;
-    [SerializeField] private float speedUp;
-    private float speedDown;
-    private bool isUp=false;
-    private bool isDown=false;
+    [SerializeField] private GameObject volna;             // Объект волны
+    [SerializeField] private float speedRight;             // Скорость движения вправо
+    [SerializeField] private float speedUp;                // Скорость подъёма
+    private float speedDown;                               // Скорость спуска
+    private bool isUp = false;                             // Флаг, если достигнут верхний предел
+    private bool isDown = false;                           // Флаг, если достигнут нижний предел
 
-    // Start is called before the first frame update
+    [SerializeField] private List<ParticleSystem> splashParticleSystems; // Список всех систем частиц для брызг
+
     void Start()
     {
-        speedDown = speedUp * 0.75f;
-
+        speedDown = speedUp * 0.75f; // Устанавливаем скорость спуска немного меньше скорости подъёма
     }
 
-    // Update is called once per frame
     void Update()
     {
         RightMove();
         UpDownMove();
+        HandleSplashEffect();
     }
 
     private void RightMove()
     {
-        Vector3 newposition = volna.transform.position;
-        newposition.x += speedRight * Time.deltaTime;
-        volna.transform.position = newposition;
+        Vector3 newPosition = volna.transform.position;
+        newPosition.x += speedRight * Time.deltaTime;
+        volna.transform.position = newPosition;
     }
 
     private void UpDownMove()
     {
-        if(Input.GetMouseButton(0)) //лкм
+        // Поднимаем волну, если нажата левая кнопка мыши
+        if (Input.GetMouseButton(0) && !isUp)
         {
-            if(!isUp)
+            Vector3 newPosition = volna.transform.position;
+            newPosition.y += speedUp * Time.deltaTime;
+            volna.transform.position = newPosition;
+        }
+        // Опускаем волну, если левая кнопка мыши не нажата
+        else if (!Input.GetMouseButton(0) && !isDown)
+        {
+            Vector3 newPosition = volna.transform.position;
+            newPosition.y -= speedDown * Time.deltaTime;
+            volna.transform.position = newPosition;
+        }
+    }
+
+    private void HandleSplashEffect()
+    {
+        // Включаем брызги при подъеме (для каждой системы частиц)
+        if (Input.GetMouseButton(0))
+        {
+            foreach (var splash in splashParticleSystems)
             {
-                Vector3 newposition = volna.transform.position;
-                newposition.y += speedUp * Time.deltaTime;
-                volna.transform.position = newposition;
+                if (!splash.isPlaying)
+                {
+                    splash.Play();
+                }
             }
         }
-        else
-            if (!isDown)
+        // Включаем брызги при сплошении (если волна опускается)
+        else if (!Input.GetMouseButton(0) && !isDown)
+        {
+            foreach (var splash in splashParticleSystems)
             {
-                Vector3 newposition = volna.transform.position;
-                newposition.y -= speedDown * Time.deltaTime;
-                volna.transform.position = newposition;
+                if (!splash.isPlaying)
+                {
+                    splash.Play();
+                }
             }
+        }
+
+        // Останавливаем брызги, если волна не двигается
+        if (!Input.GetMouseButton(0) && isDown)
+        {
+            foreach (var splash in splashParticleSystems)
+            {
+                if (splash.isPlaying)
+                {
+                    splash.Stop();
+                }
+            }
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.tag=="BorderUp")
+        // Обрабатываем достижение верхней границы волной
+        if (collision.gameObject.tag == "BorderUp")
         {
-            isUp= true;
+            isUp = true;
         }
+        // Обрабатываем достижение нижней границы волной
         if (collision.gameObject.tag == "BorderDown")
         {
             isDown = true;
@@ -67,10 +105,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        // Снимаем флаг верхней границы, если волна покидает её
         if (collision.gameObject.tag == "BorderUp")
         {
             isUp = false;
         }
+        // Снимаем флаг нижней границы, если волна покидает её
         if (collision.gameObject.tag == "BorderDown")
         {
             isDown = false;

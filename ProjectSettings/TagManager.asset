@@ -7,6 +7,7 @@ TagManager:
   - BorderUp
   - BorderDown
   - Fish
+  - Enemy
   layers:
   - Default
   - TransparentFX

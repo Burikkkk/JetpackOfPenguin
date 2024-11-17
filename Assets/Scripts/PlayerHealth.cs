@@ -1,34 +1,35 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-
-
 using UnityEngine.UI;
+
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 3;
     public int currentHealth;
-    public HPBar bar;
-
-
+    public HPBar bar;  // Ссылка на HPBar для обновления UI
+    private GameProgress gameProgress;
 
     void Start()
     {
+        gameProgress = FindObjectOfType<GameProgress>();
         currentHealth = maxHealth;
-        UpdateHealthUI();
-        
+        UpdateHealthUI();  // Инициализация UI
     }
 
+    // Метод для уменьшения здоровья
     public void TakeDamage()
     {
-        currentHealth --;     
-        if (currentHealth == 0)
+        currentHealth -= 1;
+        if (currentHealth <= 0)
         {
             Die();
         }
         UpdateHealthUI();
     }
 
+
+    // Метод для увеличения здоровья
     public void Heal(int amount)
     {
         currentHealth += amount;
@@ -38,32 +39,45 @@ public class PlayerHealth : MonoBehaviour
         }
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateHealthUI();
-       
     }
 
-  
     public void Die()
     {
-        
         Debug.Log("Игрок погиб!");
-        SceneManager.LoadSceneAsync(2); // Загрузка сцены поражения
 
+        GameProgress gameProgress = FindObjectOfType<GameProgress>();
+        if (gameProgress != null)
+        {
+            gameProgress.ShowProgressOnGameOver();
+        }
+
+        // Задержка перед загрузкой сцены
+        Invoke("LoadGameOverScene", 0.5f);  // Подождем 0.5 секунды перед загрузкой
     }
 
-   
+    private void LoadGameOverScene()
+    {
+        SceneManager.LoadSceneAsync(2);
+    }
 
+    // Обновление UI здоровья
     private void UpdateHealthUI()
     {
-        bar.UpdateHPBar(currentHealth);
+        bar.UpdateHPBar(currentHealth);  // Обновление отображения здоровья через HPBar
     }
 
-  
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Fish")
+        if (collision.gameObject.CompareTag("Fish"))
         {
-            Heal(1);
-            Destroy(collision.gameObject);
+            Heal(1);  // Восстанавливаем здоровье при столкновении с рыбкой
+            Destroy(collision.gameObject);  // Удаляем рыбку после столкновения
+        }
+
+        // Здесь добавьте обработку попадания в сосульки (уменьшение здоровья)
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage();  // Уменьшаем здоровье при столкновении с сосулькой
         }
     }
 }

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3729743334224670073}
   - component: {fileID: 7790261279015214704}
   - component: {fileID: 5768097805962366622}
+  - component: {fileID: 1988245610864798136}
   m_Layer: 0
   m_Name: coolRibich_0
   m_TagString: Fish
@@ -164,3 +165,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1988245610864798136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4143962836622896095}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9687ee073d7a1cb4ba643a52da7f53ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  healAmount: 1

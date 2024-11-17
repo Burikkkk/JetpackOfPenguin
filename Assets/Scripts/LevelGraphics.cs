@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class LevelGraphics : MonoBehaviour
@@ -9,18 +7,25 @@ public class LevelGraphics : MonoBehaviour
     private List<SpriteRenderer> graphicObjects;
     [SerializeField] private bool enabledOnStart = false;
     [SerializeField] private float timeToFade = 2.0f;
+    [SerializeField] private float scrollSpeed = 1.0f;  // Скорость движения фона и препятствий
 
     private Color startColor = Color.white;
+    private Vector3 initialPosition;  // Начальная позиция фона
 
     private void Start()
     {
         graphicObjects = new List<SpriteRenderer>();
         AddAllGraphicObjects(transform);
         SetAllRenderers(enabledOnStart);
-        
+        initialPosition = transform.position;  // Запоминаем начальную позицию
     }
 
-    
+    private void Update()
+    {
+        // Движение фона и всех его объектов
+        transform.position += Vector3.left * scrollSpeed * Time.deltaTime;
+    }
+
     private void AddAllGraphicObjects(Transform parent)
     {
         foreach (Transform child in parent)
@@ -42,15 +47,14 @@ public class LevelGraphics : MonoBehaviour
         }
     }
 
-    // true - появляется, false - исчезает
     public void StartFading(bool direction)
     {
         StartCoroutine(FadeGraphics(direction));
     }
-    
+
     private IEnumerator FadeGraphics(bool direction)
     {
-        if(direction)
+        if (direction)
         {
             SetAllRenderers(true);
         }
@@ -58,32 +62,22 @@ public class LevelGraphics : MonoBehaviour
 
         while (elapsedTime < timeToFade)
         {
-            float percent;
-
-            percent = elapsedTime / timeToFade;
+            float percent = elapsedTime / timeToFade;
 
             foreach (var spriteRenderer in graphicObjects)
             {
-                if (direction)
-                {
-                    startColor.a = percent;
-                }
-                else
-                {
-                    startColor.a = 1 - percent;
-                }
+                startColor.a = direction ? percent : 1 - percent;
                 spriteRenderer.color = startColor;
             }
-            
-            elapsedTime += Time.deltaTime;
 
-            // Wait for the next frame
+            elapsedTime += Time.deltaTime;
             yield return null;
         }
 
         if (!direction)
         {
             SetAllRenderers(false);
+            transform.position = initialPosition; // Сброс позиции фона после скрытия
         }
     }
 }
