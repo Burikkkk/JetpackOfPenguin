@@ -8,6 +8,8 @@ TagManager:
   - BorderDown
   - Fish
   - Enemy
+  - Progress
+  - ProgressBar
   layers:
   - Default
   - TransparentFX

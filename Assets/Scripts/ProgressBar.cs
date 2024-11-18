@@ -5,36 +5,46 @@ using UnityEngine.SceneManagement;
 public class GameProgress : MonoBehaviour
 {
     [SerializeField] private float[] levelTimes; // Время прохождения каждого уровня
-    private float totalGameTime;                 // Общее время прохождения всех уровней
-    private float elapsedTime;                   // Время, проведенное в игре
+    public float totalGameTime;                 // Общее время прохождения всех уровней
+    public float elapsedTime;                   // Время, проведенное в игре
     private int currentLevel;                    // Текущий уровень
 
     public Image progressBar;                    // UI-элемент для прогресс-бара
     public Sprite[] progressSprites;             // Массив спрайтов для отображения прогресса
+    public bool gameOverScene;
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);           // Сохраняем объект при смене сцены
-        LoadProgress();                          // Загружаем сохраненный прогресс при старте
+        //DontDestroyOnLoad(gameObject);           // Сохраняем объект при смене сцены
+        if(gameOverScene)
+            LoadProgress();                          // Загружаем сохраненный прогресс при старте
     }
 
     void Start()
     {
         // Рассчитываем общее время игры
-        totalGameTime = 0;
-        foreach (float levelTime in levelTimes)
+        if (!gameOverScene)
         {
-            totalGameTime += levelTime;
-        }
+            totalGameTime = 0;
+            foreach (float levelTime in levelTimes)
+            {
+                totalGameTime += levelTime;
+            }
 
-        currentLevel = CalculateCurrentLevel();  // Устанавливаем уровень на основе сохраненного прогресса
+            currentLevel = CalculateCurrentLevel();  // Устанавливаем уровень на основе сохраненного прогресса
+            return;
+        }
 
         UpdateProgressBar();                     // Обновляем прогресс-бар сразу при запуске
     }
 
     void Update()
     {
-        // Увеличиваем `elapsedTime` в зависимости от времени на уровне
+        if(gameOverScene)
+            return;
+
+        elapsedTime += Time.deltaTime;
+        /*// Увеличиваем `elapsedTime` в зависимости от времени на уровне
         if (currentLevel < levelTimes.Length)
         {
             elapsedTime += Time.deltaTime;
@@ -44,9 +54,9 @@ public class GameProgress : MonoBehaviour
             {
                 elapsedTime = levelTimes[currentLevel]; // Ограничиваем до максимума времени уровня
                 currentLevel++;                         // Переход к следующему уровню
-                SaveProgress();                         // Сохраняем прогресс при переходе на новый уровень
+                //SaveProgress();                         // Сохраняем прогресс при переходе на новый уровень
             }
-        }
+        }*/
     }
 
     // Вычисляем текущий уровень на основе времени
@@ -59,7 +69,7 @@ public class GameProgress : MonoBehaviour
             if (elapsedTime < accumulatedTime)
                 return i;
         }
-        return levelTimes.Length - 1;
+        return levelTimes.Length - 2;
     }
 
     // Вычисляем процент прохождения
@@ -101,9 +111,10 @@ public class GameProgress : MonoBehaviour
     }
 
     // Сохранение прогресса
-    private void SaveProgress()
+    public void SaveProgress()
     {
         PlayerPrefs.SetFloat("GameProgressElapsedTime", elapsedTime);
+        PlayerPrefs.SetFloat("GameProgressTotalTime", totalGameTime);
         PlayerPrefs.Save();
     }
 
@@ -113,10 +124,12 @@ public class GameProgress : MonoBehaviour
         if (PlayerPrefs.HasKey("GameProgressElapsedTime"))
         {
             elapsedTime = PlayerPrefs.GetFloat("GameProgressElapsedTime");
+            totalGameTime = PlayerPrefs.GetFloat("GameProgressTotalTime");
         }
         else
         {
             elapsedTime = 0;
+            totalGameTime = 0;
         }
     }
 
@@ -126,7 +139,8 @@ public class GameProgress : MonoBehaviour
         elapsedTime = 0;
         currentLevel = 0;
         PlayerPrefs.DeleteKey("GameProgressElapsedTime");
-        UpdateProgressBar();
+        PlayerPrefs.DeleteKey("GameProgressTotalTime");
+        //UpdateProgressBar();
     }
 
     // Показ прогресс-бара на экране поражения

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,10 +7,18 @@ using UnityEngine.SceneManagement;
 public class ChangeScene : MonoBehaviour
 {
     // Метод для начала игры
+    public GameObject progress;
     public void StartGame()
     {
+        if(progress != null)
+            Destroy(progress);
         Time.timeScale = 1.0f;
         SceneManager.LoadSceneAsync(1);
+    }
+
+    private void Start()
+    {
+        //progress = GameObject.FindWithTag();
     }
 
     // Метод для выхода из игры
@@ -27,6 +36,8 @@ public class ChangeScene : MonoBehaviour
 
     public void MainMenu()
     {
+        if(progress != null)
+            Destroy(progress);
         Time.timeScale = 1.0f;
         SceneManager.LoadSceneAsync(0);
     }

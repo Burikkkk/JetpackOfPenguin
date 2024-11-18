@@ -8,11 +8,10 @@ public class PlayerHealth : MonoBehaviour
     public int maxHealth = 3;
     private int currentHealth;
     public HPBar bar;  // Ссылка на HPBar для обновления UI
-    private GameProgress gameProgress;
+    public GameProgress gameProgress;
 
     void Start()
     {
-        gameProgress = FindObjectOfType<GameProgress>();
         currentHealth = maxHealth;
         UpdateHealthUI();  // Инициализация UI
     }
@@ -45,13 +44,10 @@ public class PlayerHealth : MonoBehaviour
     {
         Debug.Log("Игрок погиб!");
 
-        GameProgress gameProgress = FindObjectOfType<GameProgress>();
-        if (gameProgress != null)
-        {
-            gameProgress.ShowProgressOnGameOver();
-        }
+        gameProgress.SaveProgress();
+        Debug.Log(gameProgress.elapsedTime);
 
-        // Задержка перед загрузкой сцены
+        // Задержка перед загрузкой сцены ???
         Invoke("LoadGameOverScene", 0.5f);  // Подождем 0.5 секунды перед загрузкой
     }
 
