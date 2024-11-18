@@ -4,52 +4,52 @@ using UnityEngine.SceneManagement;
 
 public class GameProgress : MonoBehaviour
 {
-    [SerializeField] private float[] levelTimes; // Время прохождения каждого уровня
-    private float totalGameTime;                 // Общее время прохождения всех уровней
-    private float elapsedTime;                   // Время, проведенное в игре
-    private int currentLevel;                    // Текущий уровень
+    [SerializeField] private float[] levelTimes; // Р’СЂРµРјСЏ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ РєР°Р¶РґРѕРіРѕ СѓСЂРѕРІРЅСЏ
+    private float totalGameTime;                 // РћР±С‰РµРµ РІСЂРµРјСЏ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ РІСЃРµС… СѓСЂРѕРІРЅРµР№
+    private float elapsedTime;                   // Р’СЂРµРјСЏ, РїСЂРѕРІРµРґРµРЅРЅРѕРµ РІ РёРіСЂРµ
+    private int currentLevel;                    // РўРµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ
 
-    public Image progressBar;                    // UI-элемент для прогресс-бара
-    public Sprite[] progressSprites;             // Массив спрайтов для отображения прогресса
+    public Image progressBar;                    // UI-СЌР»РµРјРµРЅС‚ РґР»СЏ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂР°
+    public Sprite[] progressSprites;             // РњР°СЃСЃРёРІ СЃРїСЂР°Р№С‚РѕРІ РґР»СЏ РѕС‚РѕР±СЂР°Р¶РµРЅРёСЏ РїСЂРѕРіСЂРµСЃСЃР°
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);           // Сохраняем объект при смене сцены
-        LoadProgress();                          // Загружаем сохраненный прогресс при старте
+        DontDestroyOnLoad(gameObject);           // РЎРѕС…СЂР°РЅСЏРµРј РѕР±СЉРµРєС‚ РїСЂРё СЃРјРµРЅРµ СЃС†РµРЅС‹
+        LoadProgress();                          // Р—Р°РіСЂСѓР¶Р°РµРј СЃРѕС…СЂР°РЅРµРЅРЅС‹Р№ РїСЂРѕРіСЂРµСЃСЃ РїСЂРё СЃС‚Р°СЂС‚Рµ
     }
 
     void Start()
     {
-        // Рассчитываем общее время игры
+        // Р Р°СЃСЃС‡РёС‚С‹РІР°РµРј РѕР±С‰РµРµ РІСЂРµРјСЏ РёРіСЂС‹
         totalGameTime = 0;
         foreach (float levelTime in levelTimes)
         {
             totalGameTime += levelTime;
         }
 
-        currentLevel = CalculateCurrentLevel();  // Устанавливаем уровень на основе сохраненного прогресса
+        currentLevel = CalculateCurrentLevel();  // РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓСЂРѕРІРµРЅСЊ РЅР° РѕСЃРЅРѕРІРµ СЃРѕС…СЂР°РЅРµРЅРЅРѕРіРѕ РїСЂРѕРіСЂРµСЃСЃР°
 
-        UpdateProgressBar();                     // Обновляем прогресс-бар сразу при запуске
+        UpdateProgressBar();                     // РћР±РЅРѕРІР»СЏРµРј РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂ СЃСЂР°Р·Сѓ РїСЂРё Р·Р°РїСѓСЃРєРµ
     }
 
     void Update()
     {
-        // Увеличиваем `elapsedTime` в зависимости от времени на уровне
+        // РЈРІРµР»РёС‡РёРІР°РµРј `elapsedTime` РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РІСЂРµРјРµРЅРё РЅР° СѓСЂРѕРІРЅРµ
         if (currentLevel < levelTimes.Length)
         {
             elapsedTime += Time.deltaTime;
 
-            // Проверяем, прошел ли игрок текущий уровень
+            // РџСЂРѕРІРµСЂСЏРµРј, РїСЂРѕС€РµР» Р»Рё РёРіСЂРѕРє С‚РµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ
             if (elapsedTime >= levelTimes[currentLevel])
             {
-                elapsedTime = levelTimes[currentLevel]; // Ограничиваем до максимума времени уровня
-                currentLevel++;                         // Переход к следующему уровню
-                SaveProgress();                         // Сохраняем прогресс при переходе на новый уровень
+                elapsedTime = levelTimes[currentLevel]; // РћРіСЂР°РЅРёС‡РёРІР°РµРј РґРѕ РјР°РєСЃРёРјСѓРјР° РІСЂРµРјРµРЅРё СѓСЂРѕРІРЅСЏ
+                currentLevel++;                         // РџРµСЂРµС…РѕРґ Рє СЃР»РµРґСѓСЋС‰РµРјСѓ СѓСЂРѕРІРЅСЋ
+                SaveProgress();                         // РЎРѕС…СЂР°РЅСЏРµРј РїСЂРѕРіСЂРµСЃСЃ РїСЂРё РїРµСЂРµС…РѕРґРµ РЅР° РЅРѕРІС‹Р№ СѓСЂРѕРІРµРЅСЊ
             }
         }
     }
 
-    // Вычисляем текущий уровень на основе времени
+    // Р’С‹С‡РёСЃР»СЏРµРј С‚РµРєСѓС‰РёР№ СѓСЂРѕРІРµРЅСЊ РЅР° РѕСЃРЅРѕРІРµ РІСЂРµРјРµРЅРё
     private int CalculateCurrentLevel()
     {
         float accumulatedTime = 0;
@@ -62,18 +62,18 @@ public class GameProgress : MonoBehaviour
         return levelTimes.Length - 1;
     }
 
-    // Вычисляем процент прохождения
+    // Р’С‹С‡РёСЃР»СЏРµРј РїСЂРѕС†РµРЅС‚ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ
     public float CalculateProgressPercentage()
     {
         return (elapsedTime / totalGameTime) * 100;
     }
 
-    // Метод для обновления прогресс-бара в зависимости от процента прохождения
+    // РњРµС‚РѕРґ РґР»СЏ РѕР±РЅРѕРІР»РµРЅРёСЏ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїСЂРѕС†РµРЅС‚Р° РїСЂРѕС…РѕР¶РґРµРЅРёСЏ
     public void UpdateProgressBar()
     {
         float progressPercentage = CalculateProgressPercentage();
 
-        // Определяем индекс изображения для прогресс-бара в зависимости от процентов прохождения
+        // РћРїСЂРµРґРµР»СЏРµРј РёРЅРґРµРєСЃ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ РґР»СЏ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂР° РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ РїСЂРѕС†РµРЅС‚РѕРІ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ
         int spriteIndex = 0;
         if (progressPercentage >= 75)
         {
@@ -92,22 +92,22 @@ public class GameProgress : MonoBehaviour
             spriteIndex = 0;
         }
 
-        // Обновляем изображение прогресс-бара
+        // РћР±РЅРѕРІР»СЏРµРј РёР·РѕР±СЂР°Р¶РµРЅРёРµ РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂР°
         if (progressBar != null)
         {
-            progressBar.enabled = true;              // Включаем прогресс-бар
+            progressBar.enabled = true;              // Р’РєР»СЋС‡Р°РµРј РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂ
             progressBar.sprite = progressSprites[spriteIndex];
         }
     }
 
-    // Сохранение прогресса
+    // РЎРѕС…СЂР°РЅРµРЅРёРµ РїСЂРѕРіСЂРµСЃСЃР°
     private void SaveProgress()
     {
         PlayerPrefs.SetFloat("GameProgressElapsedTime", elapsedTime);
         PlayerPrefs.Save();
     }
 
-    // Загрузка прогресса
+    // Р—Р°РіСЂСѓР·РєР° РїСЂРѕРіСЂРµСЃСЃР°
     private void LoadProgress()
     {
         if (PlayerPrefs.HasKey("GameProgressElapsedTime"))
@@ -120,7 +120,7 @@ public class GameProgress : MonoBehaviour
         }
     }
 
-    // Очистка прогресса (например, для новой игры)
+    // РћС‡РёСЃС‚РєР° РїСЂРѕРіСЂРµСЃСЃР° (РЅР°РїСЂРёРјРµСЂ, РґР»СЏ РЅРѕРІРѕР№ РёРіСЂС‹)
     public void ResetProgress()
     {
         elapsedTime = 0;
@@ -129,7 +129,7 @@ public class GameProgress : MonoBehaviour
         UpdateProgressBar();
     }
 
-    // Показ прогресс-бара на экране поражения
+    // РџРѕРєР°Р· РїСЂРѕРіСЂРµСЃСЃ-Р±Р°СЂР° РЅР° СЌРєСЂР°РЅРµ РїРѕСЂР°Р¶РµРЅРёСЏ
     public void ShowProgressOnGameOver()
     {
         if (progressBar != null)

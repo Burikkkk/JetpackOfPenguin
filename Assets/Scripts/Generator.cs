@@ -10,15 +10,17 @@ public class Generator : MonoBehaviour
     [SerializeField] private float startX;
     [SerializeField] private float randomMinX;
     [SerializeField] private float randomMaxX;
+    public bool generateOnStart = true;
 
     // Start is called before the first frame update
     void Start()
     {
-        Generate();
+        if(generateOnStart)
+            Generate();
     }
+    
 
-
-    void Generate()
+    public void Generate()
     {
         for(int i=0; i<objects.Length; i++)
         {
@@ -28,8 +30,14 @@ public class Generator : MonoBehaviour
                 Vector3 position = objects[i].transform.position;
                 position.x = lastPosition + Random.Range(randomMinX, randomMaxX);
                 position.y += randomY * Random.Range(-1f, 1f);
-                Instantiate(objects[i], position, Quaternion.identity, transform);
+                var newObject = Instantiate(objects[i], position, Quaternion.identity, transform);
                 lastPosition = position.x;
+                var parallax = newObject.GetComponent<Parallax>();
+                if (parallax != null)
+                {
+                    parallax.cam = Camera.main.gameObject;
+                    parallax.repeats = false;
+                }
             }
         }
     }

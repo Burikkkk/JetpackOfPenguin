@@ -13,6 +13,5 @@ public class HPBar : MonoBehaviour
             return;
         
         gameObject.GetComponent<Image>().sprite= healthPrefabs[HP];
-        Debug.Log("������� �� " + HP);
     }
 }

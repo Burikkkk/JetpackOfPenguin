@@ -8,7 +8,7 @@ public class Orca : MonoBehaviour
     private void Start()
     {
         // ”ничтожаем касатку через заданное врем€
-        Destroy(gameObject, lifespan);
+        //Destroy(gameObject, lifespan);
     }
 
     private void Update()

@@ -7,6 +7,7 @@ public class LevelManager : MonoBehaviour
 {
     [SerializeField] private GameObject[] levels;  // Массив всех уровней (фонов)
     [SerializeField] private float[] levelTimes;   // Время каждого уровня
+    [SerializeField] private LevelObjects[] levelObjects;
     private int currentLevel;                      // Текущий уровень
 
     public bool IsFirstLevelActive { get; private set; }  // Флаг для проверки первого уровня
@@ -31,8 +32,11 @@ public class LevelManager : MonoBehaviour
             {
                 // Переход на следующий уровень
                 levels[currentLevel].GetComponent<LevelGraphics>().StartFading(false);
+                
                 currentLevel++;
+                
                 levels[currentLevel].GetComponent<LevelGraphics>().StartFading(true);
+                levelObjects[currentLevel].gameObject.SetActive(true);
 
                 // Если перешли на следующий уровень, то флаг переключается
                 if (currentLevel > 0)

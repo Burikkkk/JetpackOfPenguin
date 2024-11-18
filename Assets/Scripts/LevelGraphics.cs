@@ -46,13 +46,13 @@ public class LevelGraphics : MonoBehaviour
             spriteRenderer.enabled = value;
         }
     }
-
-    public void StartFading(bool direction)
+    
+    public void StartFading(bool direction, bool destroyOnEnd=false)
     {
-        StartCoroutine(FadeGraphics(direction));
+        StartCoroutine(FadeGraphics(direction, destroyOnEnd));
     }
-
-    private IEnumerator FadeGraphics(bool direction)
+    
+    private IEnumerator FadeGraphics(bool direction, bool destroyOnEnd)
     {
         if (direction)
         {
@@ -73,11 +73,18 @@ public class LevelGraphics : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
-
+        
         if (!direction)
         {
             SetAllRenderers(false);
-            transform.position = initialPosition; // Сброс позиции фона после скрытия
+            //transform.position = initialPosition; // Сброс позиции фона после скрытия
+            if (destroyOnEnd)
+            {
+                for (int i = 0; i < graphicObjects.Count; i++)
+                {
+                    Destroy(graphicObjects[i].gameObject);
+                }
+            }
         }
     }
 }

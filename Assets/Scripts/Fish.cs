@@ -15,5 +15,9 @@ public class Fish : MonoBehaviour
                 Destroy(gameObject);  // Удаляем рыбку после столкновения
             }
         }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }
