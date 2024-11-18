@@ -23,7 +23,7 @@ public class LevelGraphics : MonoBehaviour
     private void Update()
     {
         // Движение фона и всех его объектов
-        transform.position += Vector3.left * scrollSpeed * Time.deltaTime;
+        //transform.position += Vector3.left * scrollSpeed * Time.deltaTime;
     }
 
     private void AddAllGraphicObjects(Transform parent)

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     public int maxHealth = 3;
-    public int currentHealth;
+    private int currentHealth;
     public HPBar bar;  // Ссылка на HPBar для обновления UI
     private GameProgress gameProgress;
 
@@ -63,7 +63,7 @@ public class PlayerHealth : MonoBehaviour
     // Обновление UI здоровья
     private void UpdateHealthUI()
     {
-        bar.UpdateHPBar(currentHealth);  // Обновление отображения здоровья через HPBar
+        bar.UpdateHPBar(currentHealth - 1);  // Обновление отображения здоровья через HPBar
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
